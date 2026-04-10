@@ -1,0 +1,35 @@
+```mermaid
+graph LR
+    subgraph "Docker Compose"
+        subgraph "Bases de donnees"
+            UDB[("user-db")]
+            PDB[("property-db")]
+            MDB[("messaging-db")]
+        end
+        subgraph "Services backend"
+            GW["api-gateway :8443"]
+            AUTH["auth-service"]
+            USER["user-service"]
+            PROP["property-service"]
+            MSG["messaging-service"]
+        end
+        subgraph "Frontends"
+            CF["client-frontend :80"]
+            OF["owner-frontend :80"]
+        end
+        subgraph "Stockage"
+            MINIO["MinIO :9000"]
+        end
+    end
+
+    USER --- UDB
+    PROP --- PDB
+    MSG --- MDB
+    PROP --- MINIO
+    GW --- AUTH
+    GW --- USER
+    GW --- PROP
+    GW --- MSG
+    GW --- CF
+    GW --- OF
+```

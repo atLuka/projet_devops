@@ -1,0 +1,777 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+        sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    line-height: 1.6;
+}
+
+a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.navbar {
+    background: white;
+    padding: 0 2rem;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-brand a {
+    color: #16a34a;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+.nav-brand a:hover {
+    text-decoration: none;
+    opacity: 0.9;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.nav-links a {
+    color: #475569;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover {
+    color: #16a34a;
+    text-decoration: none;
+}
+
+.nav-user {
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.55rem 1.1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.2s;
+    text-decoration: none;
+    line-height: 1.4;
+}
+
+.btn:hover {
+    opacity: 0.88;
+    text-decoration: none;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+.btn-confirm {
+    background: #16a34a;
+    color: white;
+}
+
+.btn-confirm:hover {
+    background: #15803d;
+}
+
+.btn-outline {
+    background: white;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+}
+
+.btn-outline:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+}
+
+.btn-small {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+}
+
+.btn-small.btn-outline {
+    background: white;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+}
+
+.btn-small.btn-outline:hover {
+    background: #f1f5f9;
+}
+
+.form-page {
+    max-width: 500px;
+    margin: 2rem auto;
+}
+
+.form-page h2 {
+    margin-bottom: 1rem;
+    color: #1e293b;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.form-card {
+    background: white;
+    padding: 1.75rem;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.form-card label {
+    display: block;
+    margin-top: 0.9rem;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+.form-card input,
+.form-card select,
+.form-card textarea {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: #1e293b;
+    background: #f8fafc;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+.form-card input:focus,
+.form-card select:focus,
+.form-card textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    background: white;
+}
+
+.form-card input:disabled {
+    background: #f1f5f9;
+    color: #94a3b8;
+}
+
+.form-card button[type="submit"],
+.form-card .btn {
+    margin-top: 1.25rem;
+    width: 100%;
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+.error-msg {
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 0.6rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid #fecaca;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-header h2 {
+    color: #1e293b;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.card-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-placeholder {
+    width: 100%;
+    height: 200px;
+    background: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #94a3b8;
+}
+
+.card-body {
+    padding: 1rem 1.2rem;
+}
+
+.card h3 {
+    margin-bottom: 0.5rem;
+    color: #1e293b;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.card-type {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #2563eb;
+    background: #eff6ff;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    margin-bottom: 0.4rem;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-top: 0.3rem;
+}
+
+.card-location {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-top: 0.15rem;
+}
+
+.card-price {
+    color: #2563eb;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-top: 0.5rem;
+}
+
+.card-photos {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-top: 0.25rem;
+}
+
+.card-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.8rem;
+}
+
+.photo-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.photo-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.photo-thumb {
+    width: 130px;
+    height: 95px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.photo-item .btn-danger {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+}
+
+.reservations-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.reservations-table th,
+.reservations-table td {
+    padding: 0.6rem 0.7rem;
+    text-align: left;
+    border-bottom: 1px solid #f1f5f9;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.reservations-table th {
+    background: #f8fafc;
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+}
+
+.reservations-table td {
+    font-size: 0.85rem;
+    color: #1e293b;
+}
+
+.reservations-table tbody tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+.reservations-table tbody tr:hover {
+    background: #f1f5f9;
+}
+
+/* Actions column : stack buttons vertically to avoid overlap */
+.reservations-table td:last-child {
+    white-space: normal;
+    min-width: 140px;
+}
+
+.reservations-table td:last-child .btn {
+    display: inline-block;
+    margin: 0.15rem 0.2rem;
+}
+
+.reservations-table .btn-small {
+    padding: 0.25rem 0.55rem;
+    font-size: 0.75rem;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.status-confirmed {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-cancelled {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.status-badge.status-cancellation_requested {
+    background: #fff7ed;
+    color: #ea580c;
+}
+
+.status-badge.status-cancellation_refused {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.badge-pending {
+    background: #f59e0b;
+    color: white;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    margin-left: 0.5rem;
+    font-weight: 600;
+}
+
+.service-unavailable {
+    text-align: center;
+    padding: 3rem 2rem;
+    max-width: 480px;
+    margin: 3rem auto;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+}
+
+.service-unavailable-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.service-unavailable h2 {
+    color: #dc2626;
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.service-unavailable p {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.btn-retry {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 0.65rem 1.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    transition: background 0.2s;
+}
+
+.btn-retry:hover {
+    background: #1d4ed8;
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0 1rem;
+    }
+
+    .nav-links {
+        gap: 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .container {
+        padding: 1.25rem 1rem;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .reservations-table {
+        font-size: 0.85rem;
+    }
+
+    .reservations-table th,
+    .reservations-table td {
+        padding: 0.5rem 0.6rem;
+    }
+
+    .page-header {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: flex-start;
+    }
+}
+
+/* Contact links */
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #2563eb;
+  margin-right: 0.4rem;
+  transition: background 0.15s;
+  text-decoration: none;
+}
+
+.contact-link:hover {
+  background: #dbeafe;
+  text-decoration: none;
+}
+
+/* Countdown */
+.countdown-future {
+  color: #2563eb;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.countdown-today {
+  color: #16a34a;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.text-muted {
+  color: #94a3b8;
+}
+
+/* ===== Conversation / Messaging ===== */
+.conversation {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 60px);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.conversation-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.conversation-header h2 {
+  font-size: 1.1rem;
+  color: #1e293b;
+}
+
+.btn-back {
+  background: none;
+  border: 1px solid #cbd5e1;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #475569;
+  font-size: 0.85rem;
+}
+
+.messages-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.message-bubble {
+  max-width: 70%;
+  padding: 0.75rem 1rem;
+  border-radius: 16px;
+  line-height: 1.4;
+}
+
+.message-mine {
+  align-self: flex-end;
+  background: #16a34a;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.message-other {
+  align-self: flex-start;
+  background: #f1f5f9;
+  color: #1e293b;
+  border-bottom-left-radius: 4px;
+}
+
+.message-content {
+  font-size: 0.95rem;
+}
+
+.message-time {
+  font-size: 0.7rem;
+  margin-top: 0.3rem;
+  opacity: 0.7;
+}
+
+.message-mine .message-time {
+  text-align: right;
+}
+
+.message-input {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+.message-input input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.message-input input:focus {
+  outline: none;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+.message-input button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: #16a34a;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message-input button:hover {
+  background: #15803d;
+}
+
+.message-input button:disabled {
+  background: #86efac;
+  cursor: not-allowed;
+}
+
+.btn-messages, .btn.btn-small.btn-messages {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+
+.btn-messages:hover, .btn.btn-small.btn-messages:hover {
+  background: #dbeafe;
+}
+
+/* ===== Notification Badge ===== */
+.badge-notif {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #dc2626;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-left: 0.4rem;
+  line-height: 1;
+}
+
+.badge-notif-small {
+  min-width: 16px;
+  height: 16px;
+  font-size: 0.6rem;
+  margin-left: 0.3rem;
+}
+
+.nav-link-with-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.row-unread {
+  background: #eff6ff !important;
+  border-left: 3px solid #2563eb;
+}
+
+/* ===== Message Status Indicators ===== */
+.message-status {
+  font-size: 0.7rem;
+  margin-left: 0.3rem;
+  opacity: 0.7;
+}
+
+.message-mine .message-status {
+  color: rgba(255,255,255,0.8);
+}
+
+.message-status-sent {
+  color: rgba(255,255,255,0.6);
+}
+
+.message-status-read {
+  color: #86efac;
+}

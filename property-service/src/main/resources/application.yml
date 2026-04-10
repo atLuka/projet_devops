@@ -1,0 +1,31 @@
+server:
+  port: 8443
+  ssl:
+    key-store: /app/certs/keystore.p12
+    key-store-password: changeit
+    key-store-type: PKCS12
+
+spring:
+  application:
+    name: property-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/propertydb
+    username: user
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  level:
+    com.microservices: INFO
+  pattern:
+    console: "%d{HH:mm:ss} %-5level [property-service] %logger{20} - %msg%n"
+
+minio:
+  url: ${MINIO_URL:http://localhost:9000}
+  public-url: ${MINIO_PUBLIC_URL:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:minioadmin}
+  secret-key: ${MINIO_SECRET_KEY:minioadmin}
+  bucket: ${MINIO_BUCKET:property-photos}

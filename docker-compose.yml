@@ -1,0 +1,154 @@
+services:
+  user-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: userdb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - user-db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  property-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: propertydb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - property-db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-data:/data
+    networks:
+      - backend
+
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 3;
+      mc alias set local http://minio:9000 minioadmin minioadmin;
+      mc mb local/property-photos --ignore-existing;
+      mc anonymous set download local/property-photos;
+      exit 0;
+      "
+    networks:
+      - backend
+
+  user-service:
+    build: ./user-service
+    depends_on:
+      - user-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://user-db:5432/userdb
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+    volumes:
+      - ./certs:/app/certs:ro
+    networks:
+      - backend
+
+  auth-service:
+    build: ./auth-service
+    depends_on:
+      - user-service
+    environment:
+      USER_SERVICE_URL: https://user-service:8443
+      JWT_SECRET: ${JWT_SECRET:-dGhpcyBpcyBhIHZlcnkgc2VjcmV0IGtleSBmb3IgSldUIHRva2VuIGdlbmVyYXRpb24gMTIzNDU2Nzg5MA==}
+    volumes:
+      - ./certs:/app/certs:ro
+    networks:
+      - backend
+
+  property-service:
+    build: ./property-service
+    depends_on:
+      - property-db
+      - minio
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://property-db:5432/propertydb
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      MINIO_URL: http://minio:9000
+      MINIO_PUBLIC_URL: http://localhost:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET: property-photos
+    volumes:
+      - ./certs:/app/certs:ro
+    networks:
+      - backend
+
+  messaging-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: messagingdb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - messaging-db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  messaging-service:
+    build: ./messaging-service
+    depends_on:
+      - messaging-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://messaging-db:5432/messagingdb
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+    volumes:
+      - ./certs:/app/certs:ro
+    networks:
+      - backend
+
+  api-gateway:
+    build: ./api-gateway
+    depends_on:
+      - auth-service
+      - user-service
+      - property-service
+      - messaging-service
+    environment:
+      JWT_SECRET: ${JWT_SECRET:-dGhpcyBpcyBhIHZlcnkgc2VjcmV0IGtleSBmb3IgSldUIHRva2VuIGdlbmVyYXRpb24gMTIzNDU2Nzg5MA==}
+    ports:
+      - "8443:8443"
+    volumes:
+      - ./certs:/app/certs:ro
+    networks:
+      - backend
+
+  client-frontend:
+    build: ./client-frontend
+    networks:
+      - backend
+
+  owner-frontend:
+    build: ./owner-frontend
+    networks:
+      - backend
+
+volumes:
+  user-db-data:
+  property-db-data:
+  messaging-db-data:
+  minio-data:
+
+networks:
+  backend:

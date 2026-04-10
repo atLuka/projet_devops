@@ -1,0 +1,79 @@
+server:
+  port: 8443
+  ssl:
+    key-store: /app/certs/keystore.p12
+    key-store-password: changeit
+    key-store-type: PKCS12
+
+jwt:
+  secret: ${JWT_SECRET:dGhpcyBpcyBhIHZlcnkgc2VjcmV0IGtleSBmb3IgSldUIHRva2VuIGdlbmVyYXRpb24gMTIzNDU2Nzg5MA==}
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      httpclient:
+        ssl:
+          useInsecureTrustManager: true
+      routes:
+        - id: auth-service
+          uri: https://auth-service:8443
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=1
+
+        - id: user-service
+          uri: https://user-service:8443
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - StripPrefix=1
+
+        - id: property-service
+          uri: https://property-service:8443
+          predicates:
+            - Path=/api/properties/**
+          filters:
+            - StripPrefix=1
+
+        - id: reservation-service
+          uri: https://property-service:8443
+          predicates:
+            - Path=/api/reservations/**
+          filters:
+            - StripPrefix=1
+
+        - id: messaging-service
+          uri: https://messaging-service:8443
+          predicates:
+            - Path=/api/messages/**
+          filters:
+            - StripPrefix=1
+
+        - id: owner-frontend
+          uri: http://owner-frontend:80
+          predicates:
+            - Path=/owner/**
+
+        - id: client-frontend
+          uri: http://client-frontend:80
+          predicates:
+            - Path=/**
+
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:
+          "[/**]":
+            allowedOrigins:
+              - "https://localhost:8443"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true

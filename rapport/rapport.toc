@@ -1,0 +1,26 @@
+\babel@toc {french}{}\relax 
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
+\contentsline {section}{\numberline {2}Conception de l'application}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Réflexion sur le découpage}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Vue d'ensemble de l'architecture}{2}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Description des services}{3}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}API Gateway}{3}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.2}Auth-service}{3}{subsubsection.2.3.2}%
+\contentsline {subsubsection}{\numberline {2.3.3}User-service}{3}{subsubsection.2.3.3}%
+\contentsline {subsubsection}{\numberline {2.3.4}Property-service}{4}{subsubsection.2.3.4}%
+\contentsline {subsubsection}{\numberline {2.3.5}Messaging-service}{4}{subsubsection.2.3.5}%
+\contentsline {subsubsection}{\numberline {2.3.6}Interfaces frontend}{4}{subsubsection.2.3.6}%
+\contentsline {subsection}{\numberline {2.4}Interactions entre les services}{4}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Gestion de la résilience}{6}{subsection.2.5}%
+\contentsline {section}{\numberline {3}Technologies adoptées}{7}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Stack technique}{7}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Gestion des interactions entre les services}{8}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Gestion de la configuration}{8}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Gestion de l'authentification et des habilitations}{9}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Gestion du déploiement}{9}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}Gestion des erreurs et logging}{10}{subsection.3.6}%
+\contentsline {section}{\numberline {4}Fonctionnalités réalisées}{10}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Côté locataire}{10}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Côté propriétaire}{12}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Résilience}{13}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Conclusion}{14}{section.5}%

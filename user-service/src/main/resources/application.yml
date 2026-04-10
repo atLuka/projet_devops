@@ -1,0 +1,24 @@
+server:
+  port: 8443
+  ssl:
+    key-store: /app/certs/keystore.p12
+    key-store-password: changeit
+    key-store-type: PKCS12
+
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/userdb
+    username: user
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  level:
+    com.microservices: INFO
+  pattern:
+    console: "%d{HH:mm:ss} %-5level [user-service] %logger{20} - %msg%n"

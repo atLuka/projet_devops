@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant B as Navigateur
+    participant GW as API Gateway
+    participant A as auth-service
+    participant U as user-service
+
+    B->>GW: POST /api/auth/login
+    GW->>A: POST /auth/login
+    A->>U: GET /users/email/xxx
+    U-->>A: User (email, hash, role)
+    A-->>GW: JWT Token
+    GW-->>B: JWT Token
+
+    B->>GW: GET /api/properties (+ JWT)
+    GW->>GW: Validation JWT
+    GW->>GW: Ajout headers X-User-Email, X-User-Role
+    GW->>PROP: GET /properties
+    PROP-->>GW: Liste des logements
+    GW-->>B: Liste des logements

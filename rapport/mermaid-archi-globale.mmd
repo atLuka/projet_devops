@@ -1,0 +1,27 @@
+graph TD
+    Browser["Navigateur client"]
+    GW["API Gateway<br/>(HTTPS 8443)"]
+    AUTH["auth-service"]
+    USER["user-service"]
+    PROP["property-service"]
+    MSG["messaging-service"]
+    CF["client-frontend<br/>(React + Nginx)"]
+    OF["owner-frontend<br/>(React + Nginx)"]
+    UDB[("user-db<br/>PostgreSQL")]
+    PDB[("property-db<br/>PostgreSQL")]
+    MDB[("messaging-db<br/>PostgreSQL")]
+    MINIO["MinIO<br/>(stockage photos)"]
+
+    Browser -->|HTTPS| GW
+    GW --> AUTH
+    GW --> USER
+    GW --> PROP
+    GW --> MSG
+    GW --> CF
+    GW --> OF
+    AUTH -->|HTTPS| USER
+    USER --> UDB
+    PROP --> PDB
+    PROP --> MINIO
+    MSG --> MDB
+    Browser -.->|presigned URLs| MINIO
