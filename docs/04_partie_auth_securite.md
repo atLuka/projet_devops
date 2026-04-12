@@ -90,6 +90,39 @@ server:
 
 **Note :** La gateway utilise `useInsecureTrustManager: true` pour les appels vers les services internes (acceptable en développement avec des certificats auto-signés).
 
+#### Comprendre keystore, truststore et SAN
+
+**`keystore.p12`** = le **coffre d'identité** du service
+- Contient le certificat + la clé privée
+- C'est ce que le service présente quand un autre s'y connecte
+- Analogie : la **carte d'identité** du service
+
+**`truststore.p12`** = la **liste des autorités de confiance**
+- Contient uniquement le certificat de la CA locale
+- Un service le consulte pour vérifier si le certificat reçu est légitime
+- Analogie : le **registre officiel** qui garantit l'authenticité de la carte
+
+**SAN (Subject Alternative Names)** = les noms couverts par un seul certificat
+- En production, chaque service aurait son propre certificat
+- Ici, un seul certificat est partagé car son SAN liste tous les noms Docker : `api-gateway`, `auth-service`, `user-service`...
+- Quand la gateway se connecte à `https://auth-service:8443`, elle reçoit ce certificat et vérifie que `auth-service` est bien dans le SAN → valide
+
+**Flux de connexion HTTPS entre deux services :**
+```
+gateway → https://auth-service:8443
+  1. auth-service présente keystore.p12 ("voici mon identité")
+  2. gateway vérifie : "auth-service est-il dans le SAN ?" → oui
+  3. gateway vérifie : "ce cert est-il signé par une CA connue ?" → oui (MicroservicesCA)
+  4. Connexion TLS établie, trafic chiffré
+```
+
+| Fichier | Rôle | Analogie |
+|---|---|---|
+| `keystore.p12` | Identité du service (cert + clé privée) | Carte d'identité |
+| `truststore.p12` | Autorités de confiance (la CA) | Registre officiel |
+| SAN | Liste des noms couverts par un seul cert | Un pass valable partout |
+| CA locale | Celle qui a signé et donc "garanti" le certificat | La préfecture |
+
 ### 6. Habilitations : rôle dans le token (15 sec)
 
 Le rôle est encodé dans le JWT. La gateway l'extrait et l'injecte dans le header `X-User-Role`. Les services backend peuvent ainsi contrôler l'accès selon le rôle sans valider eux-mêmes le token.

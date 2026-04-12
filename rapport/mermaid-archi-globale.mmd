@@ -22,6 +22,6 @@ graph TD
     AUTH -->|HTTPS| USER
     USER --> UDB
     PROP --> PDB
-    PROP --> MINIO
+    PROP -.->|"génère presigned URLs"| MINIO
     MSG --> MDB
-    Browser -.->|presigned URLs| MINIO
+    Browser -.->|"upload & download fichiers\n(via presigned URLs)"| MINIO

@@ -115,14 +115,59 @@ Navigateur → PUT fichier image (presigned URL) → MinIO directement
 
 ## 7. Sécurité réseau — HTTPS inter-services
 
-- Tous les services backend communiquent en **HTTPS** (port 8443)
-- Un script `generate-certs.sh` génère dans un conteneur Alpine :
-  - Une CA locale (`ca-cert.pem`)
-  - Un certificat serveur avec SAN (couvrant tous les noms de services Docker)
-  - Un keystore PKCS12 partagé entre tous les services Spring Boot
-  - Un truststore PKCS12
-- Les frontends (HTTP interne) sont exposés en HTTPS uniquement via la gateway
-- MinIO reste en HTTP (exposé directement pour les presigned URLs)
+Tous les services backend communiquent en **HTTPS** (port 8443), y compris les appels internes. Les frontends (HTTP en interne) sont exposés en HTTPS uniquement via la gateway. MinIO reste en HTTP (exposé directement pour les presigned URLs).
+
+### Les deux fichiers de certificats
+
+**`keystore.p12`** = le **coffre d'identité** du service
+- Contient le certificat + la clé privée
+- C'est ce que le service présente quand un autre s'y connecte
+- Analogie : la **carte d'identité** du service
+
+**`truststore.p12`** = la **liste des autorités de confiance**
+- Contient uniquement le certificat de la CA locale
+- Un service le consulte pour vérifier si le certificat reçu est légitime
+- Analogie : le **registre officiel** qui garantit l'authenticité de la carte
+
+### Génération automatique (`generate-certs.sh`)
+
+Le script s'exécute dans un conteneur Alpine (pas besoin d'OpenSSL sur la machine hôte) et produit :
+
+```
+CA locale (MicroservicesCA)
+  └── signe ──> Certificat serveur RSA 2048 bits
+                  └── SAN (Subject Alternative Names) :
+                        localhost, api-gateway, auth-service,
+                        user-service, property-service,
+                        messaging-service, minio...
+                  └── keystore.p12   (cert + clé privée)
+                  └── truststore.p12 (juste la CA)
+```
+
+Le même `keystore.p12` est monté en volume read-only dans chaque conteneur (`/app/certs/keystore.p12`).
+
+### Tous les services partagent-ils le même certificat ?
+
+Oui — c'est un choix délibéré pour ce projet. En production, chaque service aurait son propre certificat. Ici, un seul certificat est valable pour tous les noms grâce au **SAN** qui les liste tous. Quand la gateway se connecte à `https://auth-service:8443`, elle reçoit ce certificat et vérifie que `auth-service` est dans le SAN → valide.
+
+### Flux de connexion HTTPS entre deux services
+
+```
+gateway → https://auth-service:8443
+  1. auth-service présente keystore.p12 ("voici mon identité")
+  2. gateway vérifie : "auth-service est-il dans le SAN ?" → oui
+  3. gateway vérifie : "ce cert est-il signé par une CA connue ?" → oui (MicroservicesCA)
+  4. Connexion TLS établie, trafic chiffré
+```
+
+| Fichier | Rôle | Analogie |
+|---|---|---|
+| `keystore.p12` | Identité du service (cert + clé privée) | Carte d'identité |
+| `truststore.p12` | Autorités de confiance (la CA) | Registre officiel |
+| SAN | Liste des noms couverts par un seul cert | Un pass valable partout |
+| CA locale | Celle qui a signé et garanti le certificat | La préfecture |
+
+**Raccourci pris :** la gateway a `useInsecureTrustManager: true` — elle chiffre le trafic mais ne valide pas l'identité des services en aval. Acceptable en dev, à proscrire en production.
 
 ---
 
