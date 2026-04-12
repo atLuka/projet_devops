@@ -1,5 +1,5 @@
 # Partie 2 — Architecture & Découpage des service
-**Durée estimée : ~2 min**
+**Durée estimée : ~2 min** | **Slides : 3 & 4**
 
 ---
 

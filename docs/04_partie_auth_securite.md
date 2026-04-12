@@ -1,5 +1,5 @@
 # Partie 4 — Authentification & Sécurit
-**Durée estimée : ~2 min**
+**Durée estimée : ~2 min** | **Slides : 6 & 7**
 
 ---
 

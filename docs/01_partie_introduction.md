@@ -1,5 +1,5 @@
 # Partie 1 — Introduction & Présentation du proje
-**Durée estimée : ~1 min 30**
+**Durée estimée : ~1 min 30** | **Slides : 1 & 2**
 
 ---
 

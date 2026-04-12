@@ -1,5 +1,5 @@
 # Partie 3 — API Gateway & Routag
-**Durée estimée : ~1 min 30**
+**Durée estimée : ~1 min 30** | **Slide : 5**
 
 ---
 

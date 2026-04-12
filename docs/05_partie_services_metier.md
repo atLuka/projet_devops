@@ -1,5 +1,5 @@
 # Partie 5 — Services métier & Persistance des donnée
-**Durée estimée : ~1 min 30**
+**Durée estimée : ~1 min 30** | **Slide : 8**
 
 ---
 

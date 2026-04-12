@@ -1,5 +1,5 @@
 # Partie 6 — Déploiement & Infrastructur
-**Durée estimée : ~1 min 30**
+**Durée estimée : ~1 min 30** | **Slides : 9 & 10**
 
 ---
 
