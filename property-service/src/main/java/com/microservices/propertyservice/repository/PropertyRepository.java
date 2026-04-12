@@ -18,10 +18,11 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
     List<Property> findByPriceLessThanEqual(Double maxPrice);
 
     @Query(
-        "SELECT p FROM Property p WHERE " +
-            "(:type IS NULL OR p.type = :type) AND " +
-            "(:location IS NULL OR LOWER(p.location) LIKE LOWER(CONCAT('%', :location, '%'))) AND " +
-            "(:maxPrice IS NULL OR p.price <= :maxPrice)"
+        value = "SELECT * FROM properties WHERE " +
+            "(CAST(:type AS VARCHAR) IS NULL OR type = CAST(:type AS VARCHAR)) AND " +
+            "(CAST(:location AS VARCHAR) IS NULL OR LOWER(location) LIKE LOWER(CONCAT('%', CAST(:location AS VARCHAR), '%'))) AND " +
+            "(:maxPrice IS NULL OR price <= :maxPrice)",
+        nativeQuery = true
     )
     List<Property> searchProperties(
         @Param("type") String type,
