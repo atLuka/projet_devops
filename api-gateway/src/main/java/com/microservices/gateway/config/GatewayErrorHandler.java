@@ -40,7 +40,7 @@ public class GatewayErrorHandler implements ErrorWebExceptionHandler {
             );
         }
 
-        if (path.startsWith("/api/")) {
+        if (path.startsWith("/api/") && isConnectionError(ex)) {
             String service = guessService(path);
             return writeJson(
                 exchange,

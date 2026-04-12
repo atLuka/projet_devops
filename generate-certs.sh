@@ -8,7 +8,7 @@ rm -rf "$CERTS_DIR"
 mkdir -p "$CERTS_DIR"
 
 
-docker run --rm -v "$CERTS_DIR:/certs" alpine sh -c '
+MSYS_NO_PATHCONV=1 docker run --rm -v "$CERTS_DIR:/certs" alpine sh -c '
 apk add --no-cache openssl > /dev/null 2>&1
 set -e
 PASSWORD="changeit"

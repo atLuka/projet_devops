@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataSeeder implements CommandLineRunner {
 
+    // Clés des photos pré-chargées dans MinIO par minio-init au démarrage
+    private static final int PHOTO_COUNT = 20;
+    private int photoIndex = 0;
+
     private final PropertyRepository propertyRepository;
     private final ReservationRepository reservationRepository;
 
@@ -525,6 +529,9 @@ public class DataSeeder implements CommandLineRunner {
         p.setPrice(price);
         p.setDescription(description);
         p.setOwnerId(ownerId);
+        // Photo pré-chargée dans MinIO par minio-init (seed-photo-01 à seed-photo-20)
+        String key = String.format("seed-photo-%02d", photoIndex++ % PHOTO_COUNT + 1);
+        p.getPhotoKeys().add(key);
         propertyRepository.save(p);
     }
 
