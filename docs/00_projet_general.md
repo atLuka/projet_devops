@@ -274,3 +274,60 @@ GET/POST /api/messages/...
 - Application locataire : https://localhost:8443
 - Espace propriétaire : https://localhost:8443/owner/
 - MinIO Console : http://localhost:9001 (minioadmin / minioadmin)
+
+
+## en plus 
+
+1. RestTemplateConfig.java — auth-service
+
+  L'auth-service doit appeler le user-service en HTTPS pour vérifier les identifiants à la connexion. Mais les certificats sont auto-signés — un RestTemplate
+  par défaut refuserait la connexion car il ne reconnaît pas la CA.
+
+  Ce fichier configure un RestTemplate qui désactive totalement la validation SSL : il accepte n'importe quel certificat sans vérifier ni la chaîne de
+  confiance ni le hostname. C'est l'équivalent côté Java de useInsecureTrustManager: true dans la gateway.
+
+  En production il faudrait charger le truststore PKCS12 à la place — mais pour le dev avec des certs auto-signés, c'est suffisant.
+
+  ---
+  2. Nginx dans les frontends
+
+  Les deux frontends sont des SPA React (Single Page Application). Vite compile tout en fichiers statiques (index.html, .js, .css). Nginx sert ces fichiers.
+
+  Le rôle clé de Nginx est dans la config nginx.conf :
+  try_files $uri $uri/ /index.html;
+
+  Sans ça, si l'utilisateur navigue directement vers https://localhost:8443/my-reservations ou rafraîchit la page, Nginx chercherait un fichier
+  /my-reservations qui n'existe pas → 404. Avec try_files, il renvoie toujours index.html et c'est React Router qui gère la route côté client.
+
+  ---
+  3. Gestion des logs
+
+  Chaque service gère ses logs de façon indépendante via SLF4J (inclus dans Spring Boot). Pas de centralisation.
+
+  Chaque application.yml définit un pattern qui préfixe chaque ligne avec le nom du service :
+  logging:
+    pattern:
+      console: "%d{HH:mm:ss} %-5level [auth-service] %logger{20} - %msg%n"
+
+  Ce qui donne dans les logs Docker :
+  14:02:31 INFO  [auth-service] AuthController - Tentative de connexion pour l'email: owner@test.com
+  14:02:31 INFO  [user-service] UserController - Recherche utilisateur par email : owner@test.com
+
+  Le make logs (= docker-compose logs -f) agrège tous les services dans le même terminal — le préfixe [service-name] permet de distinguer qui a loggé quoi. Pas
+   de log aggregator (ELK, Loki...) — inutile à cette échelle.
+
+  ---
+  4. Pourquoi MinIO a besoin d'un service d'init
+
+  MinIO démarre complètement vide : aucun bucket, aucune configuration. Il n'a pas de mécanisme natif d'initialisation au démarrage (pas d'équivalent des
+  scripts SQL init.sql de PostgreSQL).
+
+  Le conteneur minio-init utilise le client CLI mc (MinIO Client) pour faire trois choses que MinIO ne peut pas faire tout seul :
+
+  mc alias set local http://minio:9000 minioadmin minioadmin  # connexion
+  mc mb local/property-photos --ignore-existing               # crée le bucket
+  mc anonymous set download local/property-photos             # droits publics en lecture
+  mc cp /seed-photos/photo-XX.jpg local/property-photos/...  # charge les photos de seed
+
+  Sans ce conteneur, le bucket n'existerait pas au démarrage et le property-service planterait en tentant d'y uploader une photo. --ignore-existing le rend
+  idempotent — si le bucket existe déjà (redémarrage sans reset-db), il ne fait rien.
