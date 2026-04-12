@@ -49,6 +49,11 @@ public class MessageController {
         return counts;
     }
 
+    @GetMapping("/health")
+    public Map<String, String> health() {
+        return Map.of("status", "UP", "service", "messaging-service");
+    }
+
     @PutMapping("/reservation/{reservationId}/read")
     public void markAsRead(@PathVariable Long reservationId, @RequestParam String role) {
         log.info("PUT /messages/reservation/{}/read?role={}", reservationId, role);

@@ -63,4 +63,9 @@ public class UserController {
         log.info("Récupération de tous les utilisateurs");
         return userRepository.findAll();
     }
+
+    @GetMapping("/health")
+    public java.util.Map<String, String> health() {
+        return java.util.Map.of("status", "UP", "service", "user-service");
+    }
 }

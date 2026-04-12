@@ -188,6 +188,11 @@ public class PropertyController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/health")
+    public java.util.Map<String, String> health() {
+        return java.util.Map.of("status", "UP", "service", "property-service");
+    }
+
     @GetMapping("/{id}/photos")
     public List<Map<String, String>> getPhotos(@PathVariable Long id) {
         log.info("GET /properties/{}/photos", id);

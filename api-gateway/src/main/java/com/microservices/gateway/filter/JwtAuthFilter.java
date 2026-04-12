@@ -40,6 +40,9 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
         if (!path.startsWith("/api/")) {
             return chain.filter(exchange);
         }
+        if (path.endsWith("/health")) {
+            return chain.filter(exchange);
+        }
         if (path.startsWith("/api/auth")) {
             return chain.filter(exchange);
         }

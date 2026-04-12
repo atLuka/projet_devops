@@ -1,62 +1,34 @@
 import React, { useState, useEffect, useCallback } from "react";
 
+const checkHealth = async (url) => {
+  const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
+  return res.ok;
+};
+
 const SERVICES = [
   {
     name: "API Gateway",
-    check: async () => {
-      const res = await fetch("/api/properties", {
-        signal: AbortSignal.timeout(3000),
-      });
-      return true;
-    },
+    check: () => checkHealth("/api/properties/health"),
   },
   {
     name: "Auth Service",
-    check: async () => {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: "{}",
-        signal: AbortSignal.timeout(3000),
-      });
-      return res.status !== 503;
-    },
+    check: () => checkHealth("/api/auth/health"),
   },
   {
     name: "User Service",
-    check: async () => {
-      const res = await fetch("/api/users", {
-        signal: AbortSignal.timeout(3000),
-      });
-      return res.status !== 503;
-    },
+    check: () => checkHealth("/api/users/health"),
   },
   {
     name: "Property Service",
-    check: async () => {
-      const res = await fetch("/api/properties", {
-        signal: AbortSignal.timeout(3000),
-      });
-      return res.status !== 503;
-    },
+    check: () => checkHealth("/api/properties/health"),
   },
   {
     name: "Messaging Service",
-    check: async () => {
-      const res = await fetch("/api/messages/reservation/0", {
-        signal: AbortSignal.timeout(3000),
-      });
-      return res.status !== 503;
-    },
+    check: () => checkHealth("/api/messages/health"),
   },
   {
     name: "MinIO (Stockage)",
-    check: async () => {
-      const res = await fetch("http://localhost:9000/minio/health/live", {
-        signal: AbortSignal.timeout(3000),
-      });
-      return res.ok;
-    },
+    check: () => checkHealth("http://localhost:9000/minio/health/live"),
   },
 ];
 
