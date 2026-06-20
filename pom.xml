@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.microservices</groupId>
+    <artifactId>projet-devops-aggregator</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>projet-devops</name>
+    <description>Agrégateur Maven : build reactor + analyse SonarQube Cloud des microservices</description>
+
+    <!--
+      Ce pom ne sert qu'à l'agrégation (build de tous les services + analyse Sonar
+      en une passe). Chaque service garde spring-boot-starter-parent comme parent
+      et reste buildable indépendamment dans son propre dossier.
+    -->
+    <modules>
+        <module>api-gateway</module>
+        <module>auth-service</module>
+        <module>messaging-service</module>
+        <module>property-service</module>
+        <module>user-service</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonar.organization>atluka</sonar.organization>
+        <sonar.projectKey>atLuka_projet_devops</sonar.projectKey>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    </properties>
+</project>
