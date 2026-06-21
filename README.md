@@ -1,7 +1,35 @@
-# Projet Architecture des systèmes d'information - RentApp
+# Projet DevOps - RentApp
 
-Application de location de logement RentApp en microservices.  
-Groupe : Bastien, Ghislain, Nam, Luka, Ayoub, Kais
+Mise en place d'une chaîne d'intégration continue (CI) pour l'application de
+location de logement **RentApp**, construite en microservices.
+
+Groupe :  Luka SAMAC, Ayoub LABIB,
+
+---
+
+## Architecture
+
+- **5 services backend** (Spring Boot / Java 17) : `api-gateway`, `auth-service`,
+  `messaging-service`, `property-service`, `user-service`
+- **2 frontends** : `client-frontend` (locataire), `owner-frontend` (propriétaire)
+- Chaque service est un module Maven indépendant, agrégé par un `pom.xml` racine.
+
+## Intégration continue
+
+Le pipeline GitHub Actions (`.github/workflows/ci.yml`) s'exécute à chaque
+`push` et `pull request` sur `main` :
+
+| Job | Rôle |
+|---|---|
+| **backend** | Build + tests unitaires + couverture JaCoCo des 5 services (en parallèle) |
+| **frontend** | Build des 2 frontends |
+| **sonar** | Analyse qualité et couverture via SonarQube Cloud |
+| **docker-build** | Vérifie que toutes les images Docker se construisent |
+
+- **Tests** : JUnit 5 + Mockito, couverture mesurée par JaCoCo
+  (rapport agrégé dans `coverage-aggregate/`).
+- **Qualité** : SonarQube Cloud (organisation `atluka`,
+  projet `atLuka_projet_devops`), avec Quality Gate sur le nouveau code.
 
 ---
 
