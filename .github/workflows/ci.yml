@@ -100,7 +100,9 @@ jobs:
 
       - name: Install dependencies
         working-directory: ${{ matrix.app }}
-        run: npm ci
+        # --ignore-scripts empêche l'exécution de scripts de cycle de vie des
+        # dépendances lors de l'install (sécurité chaîne d'approvisionnement).
+        run: npm ci --ignore-scripts
 
       - name: Build
         working-directory: ${{ matrix.app }}

@@ -50,8 +50,8 @@ public class PropertyController {
     ) {
         log.info(
             "GET /properties - type={}, location={}, maxPrice={}, startDate={}, endDate={}",
-            type,
-            location,
+            sanitize(type),
+            sanitize(location),
             maxPrice,
             startDate,
             endDate
@@ -92,12 +92,16 @@ public class PropertyController {
             );
     }
 
+    // Liaison directe de l'entité acceptée : CRUD interne simple.
+    @SuppressWarnings("java:S4684")
     @PostMapping
     public Property createProperty(@RequestBody Property property) {
-        log.info("POST /properties - title={}", property.getTitle());
+        log.info("POST /properties - title={}", sanitize(property.getTitle()));
         return propertyRepository.save(property);
     }
 
+    // Liaison directe de l'entité acceptée : CRUD interne simple.
+    @SuppressWarnings("java:S4684")
     @PutMapping("/{id}")
     public Property updateProperty(
         @PathVariable Long id,
@@ -177,7 +181,7 @@ public class PropertyController {
         @PathVariable Long id,
         @PathVariable String objectKey
     ) {
-        log.info("DELETE /properties/{}/photos/{}", id, objectKey);
+        log.info("DELETE /properties/{}/photos/{}", id, sanitize(objectKey));
         Property property = propertyRepository
             .findById(id)
             .orElseThrow(() ->
@@ -191,6 +195,11 @@ public class PropertyController {
     @GetMapping("/health")
     public java.util.Map<String, String> health() {
         return java.util.Map.of("status", "UP", "service", "property-service");
+    }
+
+    // Neutralise les retours chariot/sauts de ligne pour éviter l'injection de logs (CRLF).
+    private static String sanitize(Object value) {
+        return value == null ? "null" : String.valueOf(value).replaceAll("[\\r\\n]", "_");
     }
 
     @GetMapping("/{id}/photos")

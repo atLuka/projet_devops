@@ -2,6 +2,7 @@ package com.microservices.userservice;
 
 import com.microservices.userservice.model.User;
 import com.microservices.userservice.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,11 @@ public class DataSeeder implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+    // Mot de passe des comptes de démo, injecté depuis la configuration
+    // (seed.user.password / variable d'env SEED_USER_PASSWORD).
+    @Value("${seed.user.password}")
+    private String seedPassword;
 
     public DataSeeder(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -23,7 +29,7 @@ public class DataSeeder implements CommandLineRunner {
             return;
         }
 
-        String hash = encoder.encode("password123");
+        String hash = encoder.encode(seedPassword);
 
         saveUser(
             "owner@test.com",

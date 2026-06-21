@@ -35,11 +35,14 @@ public class UserServiceClient {
 
     public UserDto getUserByEmail(String email) {
         try {
-            String url = userServiceUrl + "/users/email/" + email;
-            log.info("Appel au service utilisateur: GET {}", url);
+            // L'email est passé en variable de template : RestTemplate l'encode
+            // dans le chemin (pas de concaténation d'entrée utilisateur brute).
+            String url = userServiceUrl + "/users/email/{email}";
+            log.info("Appel au service utilisateur: GET {}/users/email/...", userServiceUrl);
             ResponseEntity<UserDto> response = restTemplate.getForEntity(
                 url,
-                UserDto.class
+                UserDto.class,
+                email
             );
             return response.getBody();
         } catch (HttpClientErrorException.NotFound e) {

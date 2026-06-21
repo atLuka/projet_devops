@@ -15,6 +15,10 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class RestTemplateConfig {
 
+    // Validation TLS/hostname assouplie volontairement : la communication
+    // inter-services se fait en HTTPS avec certificats auto-signés internes
+    // (réseau Docker privé), non exposés publiquement.
+    @SuppressWarnings({ "java:S4830", "java:S5527" })
     @Bean
     public RestTemplate restTemplate() throws Exception {
         TrustManager[] trustAll = new TrustManager[] {

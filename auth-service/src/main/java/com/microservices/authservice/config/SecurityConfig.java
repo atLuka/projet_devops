@@ -10,6 +10,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    // CSRF désactivé volontairement : API REST stateless authentifiée par JWT
+    // (aucune session ni cookie), la protection CSRF n'est pas applicable.
+    @SuppressWarnings("java:S4502")
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
         throws Exception {

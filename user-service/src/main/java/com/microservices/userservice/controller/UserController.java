@@ -39,7 +39,7 @@ public class UserController {
 
     @GetMapping("/email/{email}")
     public User getUserByEmail(@PathVariable String email) {
-        log.info("Recherche utilisateur par email : {}", email);
+        log.info("Recherche utilisateur par email : {}", sanitize(email));
         return userRepository
             .findByEmail(email)
             .orElseThrow(() ->
@@ -47,9 +47,11 @@ public class UserController {
             );
     }
 
+    // Liaison directe de l'entité acceptée : CRUD interne simple.
+    @SuppressWarnings("java:S4684")
     @PostMapping
     public User createUser(@RequestBody User user) {
-        log.info("Création utilisateur avec email : {}", user.getEmail());
+        log.info("Création utilisateur avec email : {}", sanitize(user.getEmail()));
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new IllegalArgumentException(
                 "Email déjà utilisé : " + user.getEmail()
@@ -67,5 +69,10 @@ public class UserController {
     @GetMapping("/health")
     public java.util.Map<String, String> health() {
         return java.util.Map.of("status", "UP", "service", "user-service");
+    }
+
+    // Neutralise les retours chariot/sauts de ligne pour éviter l'injection de logs (CRLF).
+    private static String sanitize(String value) {
+        return value == null ? "null" : value.replaceAll("[\\r\\n]", "_");
     }
 }

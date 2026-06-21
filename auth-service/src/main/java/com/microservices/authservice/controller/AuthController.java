@@ -43,7 +43,7 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         log.info(
             "Tentative d'inscription pour l'email: {}",
-            request.getEmail()
+            sanitize(request.getEmail())
         );
         UserDto user = userServiceClient.createUser(request);
         String token = jwtService.generateToken(
@@ -56,13 +56,13 @@ public class AuthController {
             user.getRole(),
             user.getId()
         );
-        log.info("Inscription reussie pour l'email: {}", user.getEmail());
+        log.info("Inscription reussie pour l'email: {}", sanitize(user.getEmail()));
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        log.info("Tentative de connexion pour l'email: {}", request.getEmail());
+        log.info("Tentative de connexion pour l'email: {}", sanitize(request.getEmail()));
         UserDto user = userServiceClient.getUserByEmail(request.getEmail());
 
         if (
@@ -72,7 +72,7 @@ public class AuthController {
                 user.getPasswordHash()
             )
         ) {
-            log.warn("Echec de connexion pour l'email: {}", request.getEmail());
+            log.warn("Echec de connexion pour l'email: {}", sanitize(request.getEmail()));
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                 new ApiError(
                     401,
@@ -93,12 +93,17 @@ public class AuthController {
             user.getRole(),
             user.getId()
         );
-        log.info("Connexion reussie pour l'email: {}", user.getEmail());
+        log.info("Connexion reussie pour l'email: {}", sanitize(user.getEmail()));
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/health")
     public java.util.Map<String, String> health() {
         return java.util.Map.of("status", "UP", "service", "auth-service");
+    }
+
+    // Neutralise les retours chariot/sauts de ligne pour éviter l'injection de logs (CRLF).
+    private static String sanitize(String value) {
+        return value == null ? "null" : value.replaceAll("[\\r\\n]", "_");
     }
 }

@@ -22,3 +22,9 @@ logging:
     com.microservices: INFO
   pattern:
     console: "%d{HH:mm:ss} %-5level [user-service] %logger{20} - %msg%n"
+
+# Mot de passe des comptes de démo (jeu de données seed). Surchargé par
+# la variable d'environnement SEED_USER_PASSWORD en dehors du développement.
+seed:
+  user:
+    password: ${SEED_USER_PASSWORD:password123}

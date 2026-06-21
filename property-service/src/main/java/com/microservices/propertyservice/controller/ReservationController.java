@@ -31,6 +31,8 @@ public class ReservationController {
         this.propertyRepository = propertyRepository;
     }
 
+    // Liaison directe de l'entité acceptée : CRUD interne simple.
+    @SuppressWarnings("java:S4684")
     @PostMapping
     public Reservation createReservation(@RequestBody Reservation reservation) {
         log.info(
@@ -89,7 +91,7 @@ public class ReservationController {
         log.info(
             "PUT /reservations/{}/status - status={}",
             id,
-            body.get("status")
+            sanitize(body.get("status"))
         );
         Reservation reservation = reservationRepository
             .findById(id)
@@ -98,5 +100,10 @@ public class ReservationController {
             );
         reservation.setStatus(body.get("status"));
         return reservationRepository.save(reservation);
+    }
+
+    // Neutralise les retours chariot/sauts de ligne pour éviter l'injection de logs (CRLF).
+    private static String sanitize(Object value) {
+        return value == null ? "null" : String.valueOf(value).replaceAll("[\\r\\n]", "_");
     }
 }

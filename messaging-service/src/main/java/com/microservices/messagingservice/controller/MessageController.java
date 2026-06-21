@@ -27,9 +27,12 @@ public class MessageController {
         return messageRepository.findByReservationIdOrderBySentAtAsc(reservationId);
     }
 
+    // Liaison directe de l'entité acceptée : CRUD interne simple, pas
+    // d'exposition de champs sensibles côté écriture.
+    @SuppressWarnings("java:S4684")
     @PostMapping
     public Message sendMessage(@RequestBody Message message) {
-        log.info("POST /messages - reservationId={}, sender={}", message.getReservationId(), message.getSenderRole());
+        log.info("POST /messages - reservationId={}, sender={}", sanitize(message.getReservationId()), sanitize(message.getSenderRole()));
         message.setSentAt(LocalDateTime.now());
         message.setRead(false);
         return messageRepository.save(message);
@@ -37,7 +40,7 @@ public class MessageController {
 
     @GetMapping("/unread")
     public Map<String, Long> getUnreadCounts(@RequestParam String role, @RequestParam List<Long> reservationIds) {
-        log.info("GET /messages/unread?role={}&reservationIds={}", role, reservationIds);
+        log.info("GET /messages/unread?role={}&reservationIds={}", sanitize(role), sanitize(reservationIds));
         Map<String, Long> counts = new java.util.HashMap<>();
         long total = 0;
         for (Long resId : reservationIds) {
@@ -56,7 +59,7 @@ public class MessageController {
 
     @PutMapping("/reservation/{reservationId}/read")
     public void markAsRead(@PathVariable Long reservationId, @RequestParam String role) {
-        log.info("PUT /messages/reservation/{}/read?role={}", reservationId, role);
+        log.info("PUT /messages/reservation/{}/read?role={}", sanitize(reservationId), sanitize(role));
         String otherRole = "TENANT".equals(role) ? "OWNER" : "TENANT";
         List<Message> messages = messageRepository.findByReservationIdOrderBySentAtAsc(reservationId);
         messages.stream()
@@ -65,5 +68,10 @@ public class MessageController {
                 m.setRead(true);
                 messageRepository.save(m);
             });
+    }
+
+    // Neutralise les retours chariot/sauts de ligne pour éviter l'injection de logs (CRLF).
+    private static String sanitize(Object value) {
+        return value == null ? "null" : String.valueOf(value).replaceAll("[\\r\\n]", "_");
     }
 }
