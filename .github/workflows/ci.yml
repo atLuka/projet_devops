@@ -76,7 +76,6 @@ jobs:
       # en une seule passe via le plugin Maven (détecte la couverture automatiquement).
       # Le plugin lit le token depuis la variable d'env SONAR_TOKEN.
       - name: Build, test, coverage & SonarQube Cloud
-        if: ${{ env.SONAR_TOKEN != '' }}
         run: mvn -B clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
   frontend:
