@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -198,5 +199,89 @@ class PropertyControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value("UP"))
             .andExpect(jsonPath("$.service").value("property-service"));
+    }
+
+    @Test
+    void updateProperty_updatesFields_whenFound() throws Exception {
+        Property existing = property(1L);
+        when(propertyRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(propertyRepository.save(any(Property.class)))
+            .thenAnswer(inv -> inv.getArgument(0));
+
+        Property update = property(1L);
+        update.setTitle("Nouveau titre");
+        update.setPrice(999.0);
+
+        mockMvc
+            .perform(
+                put("/properties/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(update))
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.title").value("Nouveau titre"))
+            .andExpect(jsonPath("$.price").value(999.0));
+
+        verify(propertyRepository).save(existing);
+    }
+
+    @Test
+    void updateProperty_returns404_whenMissing() throws Exception {
+        when(propertyRepository.findById(99L)).thenReturn(Optional.empty());
+
+        mockMvc
+            .perform(
+                put("/properties/99")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(property(99L)))
+            )
+            .andExpect(status().isNotFound());
+
+        verify(propertyRepository, never()).save(any());
+    }
+
+    @Test
+    void getPropertiesByOwner_returnsOwnerProperties() throws Exception {
+        when(propertyRepository.findByOwnerId(7L)).thenReturn(List.of(property(1L)));
+
+        mockMvc
+            .perform(get("/properties/owner/7"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].ownerId").value(7));
+    }
+
+    @Test
+    void deletePhoto_removesKeyAndReturns204() throws Exception {
+        Property p = property(1L);
+        p.getPhotoKeys().add("key-1");
+        when(propertyRepository.findById(1L)).thenReturn(Optional.of(p));
+        when(propertyRepository.save(any(Property.class))).thenReturn(p);
+
+        mockMvc
+            .perform(delete("/properties/1/photos/key-1"))
+            .andExpect(status().isNoContent());
+
+        verify(propertyRepository).save(p);
+    }
+
+    @Test
+    void getAllProperties_filtersOutReserved_whenDatesProvided() throws Exception {
+        Property free = property(1L);
+        Property booked = property(2L);
+        when(propertyRepository.findAll()).thenReturn(List.of(free, booked));
+        when(reservationRepository.findOverlapping(eq(1L), any(), any()))
+            .thenReturn(List.of());
+        when(reservationRepository.findOverlapping(eq(2L), any(), any()))
+            .thenReturn(List.of(new Reservation()));
+
+        mockMvc
+            .perform(
+                get("/properties")
+                    .param("startDate", "2026-07-01")
+                    .param("endDate", "2026-07-10")
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(1))
+            .andExpect(jsonPath("$[0].id").value(1));
     }
 }
