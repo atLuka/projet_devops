@@ -78,6 +78,15 @@ jobs:
       - name: Build, test, coverage & SonarQube Cloud
         run: mvn -B clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
+      # Rapport JaCoCo agrégé des 5 services (un seul index.html consolidé)
+      - name: Upload aggregated coverage report (JaCoCo)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-aggregate
+          path: coverage-aggregate/target/site/jacoco-aggregate/
+          if-no-files-found: ignore
+
   frontend:
     name: Frontend · ${{ matrix.app }}
     runs-on: ubuntu-latest

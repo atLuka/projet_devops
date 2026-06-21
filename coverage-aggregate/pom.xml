@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.microservices</groupId>
+        <artifactId>projet-devops-aggregator</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>coverage-aggregate</artifactId>
+    <name>coverage-aggregate</name>
+    <description>
+        Module technique : agrège la couverture JaCoCo des 5 services en un
+        seul rapport HTML (target/site/jacoco-aggregate/index.html).
+        Ne contient aucun code, ne produit aucun livrable déployable.
+    </description>
+
+    <properties>
+        <maven.install.skip>true</maven.install.skip>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
+    <!-- report-aggregate collecte la couverture de ces modules du reactor -->
+    <dependencies>
+        <dependency>
+            <groupId>com.microservices</groupId>
+            <artifactId>api-gateway</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.microservices</groupId>
+            <artifactId>auth-service</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.microservices</groupId>
+            <artifactId>messaging-service</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.microservices</groupId>
+            <artifactId>property-service</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.microservices</groupId>
+            <artifactId>user-service</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <id>aggregate-report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                        <configuration>
+                            <title>projet-devops - couverture agrégée</title>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -22,6 +22,8 @@
         <module>messaging-service</module>
         <module>property-service</module>
         <module>user-service</module>
+        <!-- doit rester en dernier : agrège la couverture des modules ci-dessus -->
+        <module>coverage-aggregate</module>
     </modules>
 
     <properties>
